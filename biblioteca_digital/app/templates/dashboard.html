@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2 class="text-3xl font-bold mb-6">Painel Administrativo</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-white p-6 rounded shadow">
+        <h3 class="text-xl font-bold mb-4">Cadastrar Novo Usuário</h3>
+        <form action="{{ url_for('admin.cadastrar_usuario') }}" method="POST">
+            <div class="mb-4">
+                <label class="block">Nome</label>
+                <input type="text" name="nome" required class="w-full border p-2 rounded">
+            </div>
+            <div class="mb-4">
+                <label class="block">E-mail</label>
+                <input type="email" name="email" required class="w-full border p-2 rounded">
+            </div>
+            <div class="mb-4">
+                <label class="block">Senha</label>
+                <input type="password" name="senha" required class="w-full border p-2 rounded">
+            </div>
+            <div class="mb-6">
+                <label class="block">Papel</label>
+                <select name="papel" class="w-full border p-2 rounded">
+                    <option value="BIBLIOTECARIO">Bibliotecário</option>
+                    {% if session.get('usuario_papel') == 'ADMIN_INICIAL' %}
+                        <option value="ADMIN">Administrador</option>
+                    {% endif %}
+                </select>
+            </div>
+            <button type="submit" class="bg-indigo-600 text-white w-full py-2 rounded hover:bg-indigo-700">Criar Usuário</button>
+        </form>
+    </div>
+
+    <div class="bg-white p-6 rounded shadow flex items-center justify-center">
+        <div class="text-center">
+            <p class="text-gray-600 mb-4">Acesse outras áreas de gestão:</p>
+            <div class="space-y-4">
+                <a href="{{ url_for('emprestimos.gerenciar') }}" class="block bg-indigo-100 text-indigo-700 p-4 rounded font-bold hover:bg-indigo-200">Gerenciar Empréstimos</a>
+                <a href="{{ url_for('relatorios.relatorios') }}" class="block bg-green-100 text-green-700 p-4 rounded font-bold hover:bg-green-200">Visualizar Relatórios</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

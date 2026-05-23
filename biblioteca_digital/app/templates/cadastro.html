@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">Cadastro de Leitor</h2>
+    <form action="{{ url_for('auth.cadastrar_leitor') }}" method="POST">
+        <div class="mb-4">
+            <label class="block text-gray-700">Nome Completo</label>
+            <input type="text" name="nome" required class="w-full p-2 border rounded mt-1">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700">E-mail</label>
+            <input type="email" name="email" required class="w-full p-2 border rounded mt-1">
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700">Senha</label>
+            <input type="password" name="senha" required class="w-full p-2 border rounded mt-1">
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700">Cadastrar</button>
+    </form>
+</div>
+{% endblock %}

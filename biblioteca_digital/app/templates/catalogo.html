@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold">Catálogo de Livros</h2>
+    {% if session.get('usuario_papel') in ('ADMIN', 'ADMIN_INICIAL', 'BIBLIOTECARIO') %}
+        <button onclick="document.getElementById('modal-livro').classList.remove('hidden')" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">+ Novo Livro</button>
+    {% endif %}
+</div>
+
+<form method="GET" action="{{ url_for('livros.catalogo') }}" class="bg-white p-4 rounded shadow mb-8 flex gap-4">
+    <input type="text" name="titulo" placeholder="Título" class="border p-2 rounded flex-1">
+    <input type="text" name="autor" placeholder="Autor" class="border p-2 rounded flex-1">
+    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded">Buscar</button>
+</form>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {% for livro in livros %}
+    <div class="bg-white p-6 rounded shadow-md border-t-4 {% if livro.status == 'DISPONIVEL' %}border-green-500{% else %}border-red-500{% endif %}">
+        <h3 class="text-xl font-bold mb-2">{{ livro.titulo }}</h3>
+        <p class="text-gray-600">Autor: {{ livro.autor }}</p>
+        <p class="text-gray-600">Categoria: {{ livro.categoria }}</p>
+        <p class="mt-4 font-semibold {% if livro.status == 'DISPONIVEL' %}text-green-600{% else %}text-red-600{% endif %}">{{ livro.status }}</p>
+        
+        {% if session.get('usuario_papel') == 'LEITOR' and livro.status == 'DISPONIVEL' %}
+            <form action="{{ url_for('emprestimos.solicitar', livro_id=livro.id) }}" method="POST" class="mt-4">
+                <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700">Solicitar Empréstimo</button>
+            </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal Novo Livro -->
+<div id="modal-livro" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-8 rounded shadow-lg max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Cadastrar Novo Livro</h3>
+        <form action="{{ url_for('livros.cadastrar') }}" method="POST">
+            <div class="mb-4">
+                <label class="block">Título</label>
+                <input type="text" name="titulo" required class="w-full border p-2 rounded">
+            </div>
+            <div class="mb-4">
+                <label class="block">Autor</label>
+                <input type="text" name="autor" required class="w-full border p-2 rounded">
+            </div>
+            <div class="mb-4">
+                <label class="block">Categoria</label>
+                <input type="text" name="categoria" required class="w-full border p-2 rounded">
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="document.getElementById('modal-livro').classList.add('hidden')" class="bg-gray-300 px-4 py-2 rounded">Cancelar</button>
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

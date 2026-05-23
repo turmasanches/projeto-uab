@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2 class="text-3xl font-bold mb-6">Relatórios e Métricas</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-white p-6 rounded shadow text-center">
+        <p class="text-gray-500 text-sm uppercase font-bold mb-2">Empréstimos Ativos</p>
+        <p class="text-5xl font-black text-indigo-600">{{ ativos }}</p>
+    </div>
+    <div class="bg-white p-6 rounded shadow text-center">
+        <p class="text-gray-500 text-sm uppercase font-bold mb-2">Total de Livros</p>
+        <p class="text-5xl font-black text-green-600">{{ total_livros }}</p>
+    </div>
+
+    <div class="bg-white p-6 rounded shadow md:col-span-2">
+        <h3 class="text-xl font-bold mb-4">Top 5 Livros mais Procurados</h3>
+        <div class="space-y-4">
+            {% for livro in top_livros %}
+            <div class="flex items-center">
+                <div class="flex-1 bg-gray-200 h-8 rounded relative overflow-hidden">
+                    <div class="bg-indigo-500 h-full flex items-center px-4 text-white text-xs font-bold" style="width: {{ (livro['total'] / 10 * 100)|round }}%">
+                        {{ livro['titulo'] }}
+                    </div>
+                </div>
+                <span class="ml-4 font-bold">{{ livro['total'] }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
