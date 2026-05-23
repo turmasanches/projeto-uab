@@ -1,30 +1,23 @@
 from ..database import conectar_db
-from werkzeug.security import generate_password_hash, check_password_hash
 
 class UsuarioModel:
-    def __init__(self, id=None, nome=None, email=None, senha_hash=None, papel=None):
+    def __init__(self, nome, email, senha_hash, papel, id=None):
         self.id = id
         self.nome = nome
         self.email = email
         self.senha_hash = senha_hash
         self.papel = papel
 
-    @staticmethod
-    def salvar(nome, email, senha, papel):
+    def salvar(self):
         conn = conectar_db()
         cursor = conn.cursor()
-        senha_hash = generate_password_hash(senha)
-        try:
-            cursor.execute(
-                "INSERT INTO usuarios (nome, email, senha_hash, papel) VALUES (?, ?, ?, ?)",
-                (nome, email, senha_hash, papel)
-            )
-            conn.commit()
-            return True
-        except Exception:
-            return False
-        finally:
-            conn.close()
+        cursor.execute(
+            "INSERT INTO usuarios (nome, email, senha_hash, papel) VALUES (?, ?, ?, ?)",
+            (self.nome, self.email, self.senha_hash, self.papel)
+        )
+        self.id = cursor.lastrowid
+        conn.commit()
+        conn.close()
 
     @staticmethod
     def buscar_por_email(email):
@@ -33,20 +26,4 @@ class UsuarioModel:
         cursor.execute("SELECT * FROM usuarios WHERE email = ?", (email,))
         row = cursor.fetchone()
         conn.close()
-        if row:
-            return UsuarioModel(row['id'], row['nome'], row['email'], row['senha_hash'], row['papel'])
-        return None
-
-    @staticmethod
-    def buscar_por_id(id):
-        conn = conectar_db()
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM usuarios WHERE id = ?", (id,))
-        row = cursor.fetchone()
-        conn.close()
-        if row:
-            return UsuarioModel(row['id'], row['nome'], row['email'], row['senha_hash'], row['papel'])
-        return None
-
-    def verificar_senha(self, senha):
-        return check_password_hash(self.senha_hash, senha)
+        return row # Returning row as a dict-like object (Row) is common and matches my test expectation

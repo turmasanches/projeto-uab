@@ -22,7 +22,8 @@
         <p class="mt-4 font-semibold {% if livro.status == 'DISPONIVEL' %}text-green-600{% else %}text-red-600{% endif %}">{{ livro.status }}</p>
         
         {% if session.get('usuario_papel') == 'LEITOR' and livro.status == 'DISPONIVEL' %}
-            <form action="{{ url_for('emprestimos.solicitar', livro_id=livro.id) }}" method="POST" class="mt-4">
+            <form action="{{ url_for('emprestimos.solicitar') }}" method="POST" class="mt-4">
+                <input type="hidden" name="livro_id" value="{{ livro.id }}">
                 <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700">Solicitar Empréstimo</button>
             </form>
         {% endif %}
